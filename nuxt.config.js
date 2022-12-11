@@ -25,6 +25,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    { src: '~/plugins/persistedState.client.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -38,6 +39,23 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: "AIzaSyC1Tr4ufBzwEcHzsjNi3ZW0XvGDTUu6oF8",
+          authDomain: "chat-application-ef019.firebaseapp.com",
+          projectId: "chat-application-ef019",
+          storageBucket: "chat-application-ef019.appspot.com",
+          messagingSenderId: "369669726382",
+          appId: "1:369669726382:web:198c1f05ab5856241f0d3f",
+          measurementId: "G-CJ9L6FF8JQ"
+        },
+        services: {
+          auth: true // Just as example. Can be any other service.
+        }
+      }
+    ]
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
