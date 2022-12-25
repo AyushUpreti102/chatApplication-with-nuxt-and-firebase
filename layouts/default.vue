@@ -6,30 +6,14 @@
       :clipped="clipped"
       fixed
       app
+      width="300"
     >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in getDrawerItems"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      <UserInfo />
+      <OtherUsers />
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>Chat Application</v-toolbar-title>
-      <v-spacer />
-      <SignIn />
-      <v-btn icon @click="changeTheme"><v-icon>mdi-brightness-6</v-icon></v-btn>
     </v-app-bar>
     <v-main>
       <Nuxt />
@@ -41,10 +25,11 @@
 </template>
 
 <script>
-import SignIn from "../components/SignIn.vue";
+import OtherUsers from "../components/OtherUsers.vue";
+import UserInfo from "../components/UserInfo.vue";
 export default {
   name: "DefaultLayout",
-  components: { SignIn },
+  components: { UserInfo, OtherUsers },
   data() {
     return {
       clipped: false,
@@ -54,14 +39,15 @@ export default {
     };
   },
   computed: {
-    getDrawerItems() {
-      return this.$store.getters.getDrawerItems;
+    getTheme() {
+      return this.$store.getters.getTheme;
+    },
+    getUser() {
+      return this.$store.getters.getUser;
     },
   },
-  methods: {
-    changeTheme() {
-      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
-    },
+  mounted() {
+    this.$vuetify.theme.dark = this.getTheme;
   },
 };
 </script>
