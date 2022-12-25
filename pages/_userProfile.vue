@@ -1,9 +1,13 @@
 <template>
-  <v-container></v-container>
+  <div></div>
 </template>
 
 <script>
 export default {
-  name: 'InspirePage'
+
 }
 </script>
+
+<style>
+
+</style>

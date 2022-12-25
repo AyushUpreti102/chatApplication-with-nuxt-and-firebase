@@ -1,8 +1,8 @@
 <template>
-  <div class="text-center">
+  <div>
     <v-dialog v-model="dialog" width="60%">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn text v-bind="attrs" v-on="on"> Sign In </v-btn>
+        <div v-bind="attrs" v-on="on">Signin</div>
       </template>
 
       <v-card>
@@ -19,14 +19,26 @@
 
             <v-text-field
               v-model="password"
-              :counter="10"
+              :counter="8"
               :rules="passwordRules"
-              :type="type"
+              :type="showPassword ? 'name' : 'password'"
               label="Password"
-              :append-icon="icon"
+              :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
               required
-              @click:append="showPassword"
+              @click:append="showPassword = !showPassword"
             ></v-text-field>
+
+            <v-card-text
+              ><v-row justify="center"
+                ><div style="cursor: pointer" @click="changeForm = !changeForm">
+                  {{
+                    changeForm
+                      ? "Already a user? sign in"
+                      : "Not Signed up yet? Sign up to become a member of chat application"
+                  }}
+                </div></v-row
+              ></v-card-text
+            >
 
             <v-row justify="center" class="mt-5">
               <v-btn
@@ -34,9 +46,10 @@
                 color="success"
                 width="80%"
                 large
-                @click="validate"
+                :loading="isLoading"
+                @click.stop="validateLoginOrSignUp"
               >
-                Sign In
+                {{ changeForm ? "Signup" : "Signin" }}
               </v-btn>
             </v-row>
           </v-form>
@@ -55,31 +68,41 @@ export default {
       valid: true,
       password: "",
       passwordRules: [
-        (v) => !!v || "Name is required",
-        (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+        (v) => !!v || "Password is required",
+        (v) =>
+          (v && v.length >= 8) || "Password must be more than 8 characters",
       ],
       email: "",
       emailRules: [
         (v) => !!v || "E-mail is required",
         (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
       ],
-      showPasswrd: false,
-      icon: "mdi-eye",
-      type: "password",
+      showPassword: false,
+      changeForm: false,
+      isLoading: false,
     };
   },
   methods: {
-    validate() {
+    async validateLoginOrSignUp() {
       this.$refs.form.validate();
-    },
-    showPassword() {
-      this.showPasswrd = !this.showPasswrd;
-      if (this.showPasswrd) {
-        this.icon = "mdi-eye-off";
-        this.type = "name";
+      if (this.changeForm) {
+        this.isLoading = true;
+        await this.$store.dispatch("Signup", {
+          email: this.email,
+          password: this.password,
+        });
+        this.isLoading = false;
+        this.dialog = false;
       } else {
-        this.icon = "mdi-eye";
-        this.type = "password";
+        this.isLoading = true;
+        await this.$store.dispatch("login", {
+          email: this.email,
+          password: this.password,
+        });
+        this.isLoading = false;
+        this.dialog = false;
+        this.email = "";
+        this.password = "";
       }
     },
   },
